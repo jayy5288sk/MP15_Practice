@@ -13,12 +13,13 @@ public class PlayerController : MonoBehaviour, IInteractor
     private void Awake()
     {
         CacheComponents();
-        //DetectRoutineSetter();
+        RaycastInit();
     }
 
     private void Start()
     {
         LockCursor();
+        StartCoroutine(RaycastRoutine());
     }
 
     private void Update()
@@ -31,7 +32,7 @@ public class PlayerController : MonoBehaviour, IInteractor
         // + 추가됨
         _weapon.Reload();
         // ++ 추가됨
-        DetectInteractable();
+        //DetectInteractable();
         TryInteract();
         // +++ 추가됨
         PauseGame();
@@ -91,7 +92,7 @@ public class PlayerController : MonoBehaviour, IInteractor
     public GameObject GameObject { get => gameObject; }
     [SerializeField] private KeyCode _interactionKey = KeyCode.E;
     private bool _isPressedInteractionKey => Input.GetKeyDown(_interactionKey);
-    private bool _canInteraction => _hasDetectInteractable && _isPressedInteractionKey; //&& !_cantDetectable;
+    private bool _canInteraction => _hasDetectInteractable && _isPressedInteractionKey; 
 
     public void DetectInteractable()
     {
@@ -146,7 +147,22 @@ public class PlayerController : MonoBehaviour, IInteractor
     // ----------------------------------------------------------
 
     //// ----------------- 코루틴 방식의 DetectInteractable ----------------- //
-    
+    [SerializeField] private float _raycastDelay;
+    private WaitForSeconds _raycastWait;
+    private bool _isInteractorDetect = true;
+    private void RaycastInit()
+    {
+        _raycastWait = new WaitForSeconds(_raycastDelay);
+    }
+
+    public IEnumerator RaycastRoutine()
+    {
+        while (_isInteractorDetect)
+        {
+            DetectInteractable();
+            yield return _raycastWait;
+        }
+    }
 
     // Continue Button
     [SerializeField] private KeyCode _pauseKey = KeyCode.Escape;

@@ -2319,6 +2319,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5402653265558744368, guid: e89f580e026d7664396e185f318aba46, type: 3}
+      propertyPath: _raycastDelay
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5402653265558744368, guid: e89f580e026d7664396e185f318aba46, type: 3}
       propertyPath: _playerExitControll
       value: 
       objectReference: {fileID: 142429405}
@@ -2447,6 +2451,10 @@ PrefabInstance:
       propertyPath: _bulletPool
       value: 
       objectReference: {fileID: 2023714547}
+    - target: {fileID: 2068700404542266364, guid: 32c207c067197a34ca9e5a1c2b45777c, type: 3}
+      propertyPath: _rayShotToPlayerDelay
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 8455378445949325245, guid: 32c207c067197a34ca9e5a1c2b45777c, type: 3}
       propertyPath: m_Name
       value: Turret5

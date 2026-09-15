@@ -16,10 +16,6 @@ public class TurretController5 : MonoBehaviour
     [SerializeField] private float _rotateSpeed;
     [SerializeField] private Transform _headTransform;
 
-    //[SerializeField] private float _cooldown;
-    //private float _currentCooldown;
-    //private bool _isReadyToFire { get { return _currentCooldown >= _cooldown; } }
-
     [Header("Bullet")]
     [SerializeField] private BulletControll _bulletPrefab;
     [SerializeField] private int _bulletDamage;
@@ -30,14 +26,18 @@ public class TurretController5 : MonoBehaviour
     private void Awake()
     {
         CacheComponents();
+        RaySetter();
     }
 
+    private void Start()
+    {
+        StartCoroutine(RayShotToPlayerRoutine());
+    }
+    
     private void Update()
     {
-        RayShotToPlayer();
         Rotate();
         Fire();
-        //UpdateCurrentCooldown();
     }
 
     private void CacheComponents()
@@ -75,8 +75,6 @@ public class TurretController5 : MonoBehaviour
         _headTransform.LookAt(look);
 
         // 발사.
-        //if (!_isReadyToFire)
-        //    return;
         // + 코루틴 적용
         if (_isNotCannonShot)
             return;
@@ -84,19 +82,8 @@ public class TurretController5 : MonoBehaviour
         StartCoroutine(CannonFireRoutine());
 
         SpawnBullet();
-
-        //_currentCooldown = 0f;
     }
-
-    //private void UpdateCurrentCooldown()
-    //{
-    //    if (_isReadyToFire)
-    //    {
-    //        return;
-    //    }
-    //    _currentCooldown += Time.deltaTime;
-    //}
-
+    
     // --------- 개선된 사격 간격(코루틴) -------- //
     [SerializeField] private float _cannonShotDelay;
     private bool _isNotCannonShot;
@@ -164,6 +151,26 @@ public class TurretController5 : MonoBehaviour
             _isPlayerInsight = true;
         }
     }
+    
+    // -------- 개선된 방식의 RayShotToPlayer(코루틴 캐싱) ---- //
+    [SerializeField] private float _rayShotToPlayerDelay;
+    private WaitForSeconds _waitRayShotToPlayer;
+    private bool _isRayToPlayer = true;
+
+    private void RaySetter()
+    {
+        _waitRayShotToPlayer = new WaitForSeconds(_rayShotToPlayerDelay);
+    }
+
+    public IEnumerator RayShotToPlayerRoutine()
+    {
+        while (_isRayToPlayer)
+        {
+            RayShotToPlayer();
+            yield return _waitRayShotToPlayer;
+        }
+    }
+    // ---------------------------------------------------- //
 
     private bool TryGetDamageable(out IDamagable damageable)
     {
