@@ -33,6 +33,7 @@ public class PlayerController : MonoBehaviour, IInteractor
         _weapon.Reload();
         // ++ 추가됨
         //DetectInteractable();
+        _weapon.WeaponSwap();
         TryInteract();
         // +++ 추가됨
         PauseGame();

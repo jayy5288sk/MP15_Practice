@@ -5,17 +5,17 @@ using UnityEngine;
 
 public class PlayerWeapon : MonoBehaviour
 {
+    [field: SerializeField] public GameObject _gunPrefab;
     private Transform _cameraTransform;
-
     [SerializeField] private KeyCode _fireKey = KeyCode.Mouse0;
     [SerializeField] private float _range;
     [SerializeField] private int _damage;
     private bool _isPressedFire => Input.GetKey(_fireKey);
-    private bool _canFire => _isPressedFire && !_isNotRdyFire && !_isEmptyMagazine && !_isReloading;
+    private bool _canFire => _isPressedFire && !_isNotRdyFire && !_isEmptyMagazine && !_isReloading && _isGun;
 
     [SerializeField] private LayerMask _targetLayer;
 
-    // --------- 재장전 -----------
+    // --------- 총 재장전 -----------
     // R키로 30발 재장전
     [SerializeField] private KeyCode _reloadKey = KeyCode.R;
     // 탄알집에 30발 들어갈 수 있다고 가정
@@ -32,8 +32,11 @@ public class PlayerWeapon : MonoBehaviour
     public void Reload()
     {
         if (!_isPressedReload)
-              return;
-        
+            return;
+
+        if (!_isGun)
+            return;
+
         StartCoroutine(ReloadRoutine());
     }
     // -------- 개선된 재장전 (코루틴) --------//
@@ -56,10 +59,12 @@ public class PlayerWeapon : MonoBehaviour
         CacheComponents();
         // +
         FireRoutineSetter();
+        WeaponSwapSetter();
     }
     private void Start()
     {
         Init();
+        InitWeaponSet();
     }
     // ------------------------------------------
 
@@ -150,4 +155,80 @@ public class PlayerWeapon : MonoBehaviour
         // 원하는 벡터가 들어갈 수 있음.
         effectTransform.forward = hit.normal;
     }
+
+    // ---------- 무기 교체 관련 ---------- //
+    [SerializeField] private KeyCode _weaponSwapKey = KeyCode.Alpha1;
+    private bool _isPressedWeaponChanged => Input.GetKey(_weaponSwapKey);
+    public GameObject[] weaponSlots;
+    private GameObject _currentWeapon;
+    private GameObject _nextWeapon;
+    private GameObject _tempWeapon;
+    public bool _isGun;
+
+    private void InitWeaponSet()
+    {
+        _currentWeapon = weaponSlots[0];
+        _gunPrefab = weaponSlots[0];
+        _isGun = true;
+        _nextWeapon = weaponSlots[1];
+
+        for (int i = 0; i < weaponSlots.Length; i++)
+        {
+            if(weaponSlots[i] != _currentWeapon)
+            {
+                weaponSlots[i].SetActive(false);
+            }
+            else
+            {
+                weaponSlots[i].SetActive(true);
+            }
+        }
+    }
+
+    public void WeaponSwap()
+    {
+        if (!_isPressedWeaponChanged)
+            return;
+
+        if (_notChanged)
+            return;
+        
+        StartCoroutine(WeaponSwapRoutine());
+        _currentWeapon.SetActive(false);
+        _nextWeapon.SetActive(true);
+
+        _tempWeapon = _currentWeapon;
+        _currentWeapon = _nextWeapon;
+        _nextWeapon = _tempWeapon;
+
+        if (_currentWeapon != _gunPrefab)
+        {
+            _isGun = false;
+        }
+        else
+        {
+            _isGun = true;
+        }
+    }
+
+    private float _weaponSwapDelay = 2f;
+    private WaitForSeconds _weaponSwapWait;
+    private bool _notChanged;
+
+    private void WeaponSwapSetter()
+    {
+        _weaponSwapWait = new WaitForSeconds(_weaponSwapDelay);
+    }
+
+    public IEnumerator WeaponSwapRoutine()
+    {
+        _notChanged = true;
+        yield return _weaponSwapWait;
+        _notChanged = false;
+    }
+
+    // ----------- 수류탄 관련 ---------- //
+    [SerializeField] private float _maxGrenadeThrowForce;
+
+    // ---------------------------------- //
 }

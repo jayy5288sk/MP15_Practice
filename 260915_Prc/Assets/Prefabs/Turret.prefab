@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 7316631907425222760}
   - component: {fileID: 3035256984040842663}
   - component: {fileID: 9121693926966219212}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Turret
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -141,7 +141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b911b8d050e46d41bc5004ec5baf5ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHp: 0
+  maxHp: 100
 --- !u!1001 &6124897396235669485
 PrefabInstance:
   m_ObjectHideFlags: 0

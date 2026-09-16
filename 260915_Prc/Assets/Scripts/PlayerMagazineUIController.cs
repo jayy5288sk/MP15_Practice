@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class PlayerUIController : MonoBehaviour
+public class PlayerMagazineUIController : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _magazine;
     private PlayerWeapon _weapon;
