@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -113,6 +114,7 @@ public class PlayerWeapon : MonoBehaviour
     private void Init()
     {
         _currentMagazineCount = _magazineCount;
+        _currentGrenadeCounts = _maxGrenadeCounts;
     }
 
     // ------ 개선된 사격 쿨타임(캐싱 코루틴) ---------//
@@ -169,6 +171,7 @@ public class PlayerWeapon : MonoBehaviour
     {
         _currentWeapon = weaponSlots[0];
         _gunPrefab = weaponSlots[0];
+        _grenadePrefab = weaponSlots[1];
         _isGun = true;
         _nextWeapon = weaponSlots[1];
 
@@ -229,11 +232,42 @@ public class PlayerWeapon : MonoBehaviour
 
     // ----------- 수류탄 관련 ---------- //
     [SerializeField] private float _maxGrenadeThrowForce;
+    private float _currentGrenadeThrowForce;
     public bool _isGrenade => !_isGun;
     [SerializeField] private int _maxGrenadeCounts;
     private int _currentGrenadeCounts;
 
     public int MaxGrenadeCounts => _maxGrenadeCounts;
     public int CurrentGrenadeCounts => _currentGrenadeCounts;
+
+    [SerializeField] private Transform _throwingPoint;
+    [SerializeField] private GameObject _grenadePrefab;
+    [SerializeField] private KeyCode _throwKey = KeyCode.Mouse0;
+    private bool _isPressThrowKey => Input.GetKey(_throwKey);
+    private bool _isReleaseThrowKey => Input.GetKeyUp(_throwKey);
+    private bool _canThrowGrenade => _isGrenade && _currentGrenadeCounts < 0;
+    private void GrenadeThrowCharge()
+    {
+        if (!_isPressThrowKey)
+            return;
+
+        if (!_canThrowGrenade)
+            return;
+
+        _currentGrenadeThrowForce += (_maxGrenadeThrowForce / 3) * Time.deltaTime;
+        _currentGrenadeThrowForce = Mathf.Clamp(_currentGrenadeThrowForce, 0f, _maxGrenadeThrowForce);
+    }
+
+    private void GrenadeThrowRelease()
+    {
+        if (!_isReleaseThrowKey)
+            return;
+
+        if (_currentGrenadeThrowForce <= _maxGrenadeThrowForce / 3)
+        {
+            _currentGrenadeThrowForce = 0f;
+            return;
+        }
+    }
     // ---------------------------------- //
 }

@@ -23,7 +23,7 @@ public class PlayerGrenadeUIController : MonoBehaviour
         {
             _grenadeUIControll.SetActive(true);
         }
-        _GrenadeCount.text = $"RGD-5  {_weapon.CurrentGrenadeCounts} / {_weapon.MaxGrenadeCounts}";
+        _GrenadeCount.text = $" 탄약: {_weapon.CurrentGrenadeCounts} / {_weapon.MaxGrenadeCounts}";
     }
 
     private void CacheComponents()
