@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PlayerWeapon : MonoBehaviour
 {
-    [field: SerializeField] public GameObject _gunPrefab;
+    [SerializeField] private GameObject _gunPrefab;
     private Transform _cameraTransform;
     [SerializeField] private KeyCode _fireKey = KeyCode.Mouse0;
     [SerializeField] private float _range;
@@ -229,6 +229,11 @@ public class PlayerWeapon : MonoBehaviour
 
     // ----------- 수류탄 관련 ---------- //
     [SerializeField] private float _maxGrenadeThrowForce;
+    public bool _isGrenade => !_isGun;
+    [SerializeField] private int _maxGrenadeCounts;
+    private int _currentGrenadeCounts;
 
+    public int MaxGrenadeCounts => _maxGrenadeCounts;
+    public int CurrentGrenadeCounts => _currentGrenadeCounts;
     // ---------------------------------- //
 }

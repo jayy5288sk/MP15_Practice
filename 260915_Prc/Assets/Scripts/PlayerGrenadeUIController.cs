@@ -4,10 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class PlayerMagazineUIController : MonoBehaviour
+public class PlayerGrenadeUIController : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI _magazine;
-    [SerializeField] private GameObject _magazineUIControll;
+    [SerializeField] private TextMeshProUGUI _GrenadeCount;
+    [SerializeField] private GameObject _grenadeUIControll;
     private PlayerWeapon _weapon;
 
     private void Awake() => CacheComponents();
@@ -15,15 +15,15 @@ public class PlayerMagazineUIController : MonoBehaviour
 
     public void RefreshMegazineUI()
     {
-        if(!_weapon._isGun)
+        if (!_weapon._isGrenade)
         {
-            _magazineUIControll.SetActive(false);
+            _grenadeUIControll.SetActive(false);
         }
         else
         {
-            _magazineUIControll.SetActive(true);
+            _grenadeUIControll.SetActive(true);
         }
-        _magazine.text = $" 탄약: {_weapon.CurrentMagazine} / {_weapon.MaxMagazine}";
+        _GrenadeCount.text = $"RGD-5  {_weapon.CurrentGrenadeCounts} / {_weapon.MaxGrenadeCounts}";
     }
 
     private void CacheComponents()
