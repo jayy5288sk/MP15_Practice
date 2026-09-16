@@ -242,11 +242,15 @@ public class PlayerWeapon : MonoBehaviour
 
     [SerializeField] private Transform _throwingPoint;
     [SerializeField] private GameObject _grenadePrefab;
-    [SerializeField] private KeyCode _throwKey = KeyCode.Mouse0;
+    [SerializeField] private KeyCode _throwKey = KeyCode.Mouse1;
     private bool _isPressThrowKey => Input.GetKey(_throwKey);
     private bool _isReleaseThrowKey => Input.GetKeyUp(_throwKey);
-    private bool _canThrowGrenade => _isGrenade && _currentGrenadeCounts < 0;
-    private void GrenadeThrowCharge()
+    private bool _canThrowGrenade => _isGrenade && _currentGrenadeCounts > 0;
+    public bool GetPressThrowKey => _isPressThrowKey;
+    public bool GetReleaseThrowKey => _isReleaseThrowKey;
+    public float MaxGrenadeThrowForce => _maxGrenadeThrowForce;
+    public float CurrentGrenadeThrowForce => _currentGrenadeThrowForce;
+    public void GrenadeThrowCharge()
     {
         if (!_isPressThrowKey)
             return;
@@ -258,7 +262,7 @@ public class PlayerWeapon : MonoBehaviour
         _currentGrenadeThrowForce = Mathf.Clamp(_currentGrenadeThrowForce, 0f, _maxGrenadeThrowForce);
     }
 
-    private void GrenadeThrowRelease()
+    public void GrenadeThrowRelease()
     {
         if (!_isReleaseThrowKey)
             return;
@@ -268,6 +272,11 @@ public class PlayerWeapon : MonoBehaviour
             _currentGrenadeThrowForce = 0f;
             return;
         }
+        
+        Vector3 throwForce = _throwingPoint.forward * _currentGrenadeThrowForce;
+        
+        _currentGrenadeCounts--;
+        _currentGrenadeThrowForce = 0f;
     }
     // ---------------------------------- //
 }

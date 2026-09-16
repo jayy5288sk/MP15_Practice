@@ -43,6 +43,9 @@ public class PlayerController : MonoBehaviour, IInteractor
             GameManager.Instance.Pause();
         if (Input.GetKeyDown(KeyCode.O))
             GameManager.Instance.Run();
+        // ++++++ 추가됨.
+        _weapon.GrenadeThrowCharge();
+        _weapon.GrenadeThrowRelease();
     }
 
     private void FixedUpdate()
